@@ -1,13 +1,13 @@
-package com.park_track_backend;
+package com.park_track;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ParkTrackBackendApplication {
+public class ParkTrackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ParkTrackBackendApplication.class, args);
+		SpringApplication.run(ParkTrackApplication.class, args);
 	}
 
 }
