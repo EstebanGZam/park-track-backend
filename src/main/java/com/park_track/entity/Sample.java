@@ -1,11 +1,11 @@
 package com.park_track.entity;
 
+import com.park_track.model.RawData;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.sql.Timestamp;
 
 @Entity
@@ -27,10 +27,6 @@ public class Sample {
 	@Id
 	@Column(name = "test_type_id", nullable = false)
 	private Long testTypeId;
-
-	@ManyToOne
-	@JoinColumn(name = "city_id", nullable = false)
-	private City city;
 
 	@Column(nullable = false, length = 1)
 	private String onOffState;
