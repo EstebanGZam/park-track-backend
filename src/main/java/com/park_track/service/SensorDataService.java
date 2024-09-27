@@ -47,7 +47,7 @@ public class SensorDataService {
                 .date(Timestamp.valueOf(parsedDate))
                 .onOffState("1")
                 .aptitudeForTheTest("1")
-                .rawData(objectMapper.writeValueAsString(sensorDataDTO.getData()))
+                .rawData(sensorDataDTO.getData())
                 .build();
 
         return sampleRepository.save(sample);

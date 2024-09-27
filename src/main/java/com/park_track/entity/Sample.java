@@ -1,6 +1,7 @@
 package com.park_track.entity;
 
 import com.park_track.model.RawData;
+import com.park_track.model.RawDataConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,8 +38,7 @@ public class Sample {
 	@Column(nullable = false, length = 1)
 	private String aptitudeForTheTest;
 
-	@Lob
+	@Convert(converter = RawDataConverter.class)
 	@Column(nullable = false, name = "raw_data", columnDefinition = "jsonb")
-	private String rawData;
-
+	private RawData rawData;
 }
