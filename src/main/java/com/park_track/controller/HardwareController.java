@@ -28,11 +28,18 @@ public class HardwareController {
 		try {
 			String sensorDataJson = objectMapper.writeValueAsString(sensorData);
 			logger.info("Received sensor data: {}", sensorDataJson);
+
+			sensorDataService.saveSensorData(sensorData);
+
 		} catch (JsonProcessingException e) {
 			logger.error("Error processing JSON: {}", e.getMessage());
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body("Error processing data");
+		} catch (Exception e) {
+			logger.error("Error saving data: {}", e.getMessage());
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body("Error saving data");
 		}
-		return ResponseEntity.ok("Data received successfully!");
+		return ResponseEntity.ok("Data received and saved successfully!");
 	}
 }

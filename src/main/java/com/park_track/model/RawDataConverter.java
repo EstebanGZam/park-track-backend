@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
 
+import java.io.IOException;
+
 @Converter(autoApply = true)
 public class RawDataConverter implements AttributeConverter<RawData, String> {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public String convertToDatabaseColumn(RawData rawData) {
@@ -18,19 +20,19 @@ public class RawDataConverter implements AttributeConverter<RawData, String> {
         try {
             return objectMapper.writeValueAsString(rawData);
         } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error serializing RawData to JSON", e);
+            throw new IllegalArgumentException("Error converting RawData to JSON", e);
         }
     }
 
     @Override
-    public RawData convertToEntityAttribute(String dbData) {
-        if (dbData == null || dbData.isEmpty()) {
+    public RawData convertToEntityAttribute(String rawDataJson) {
+        if (rawDataJson == null) {
             return null;
         }
         try {
-            return objectMapper.readValue(dbData, RawData.class);
-        } catch (JsonProcessingException e) {
-            throw new IllegalArgumentException("Error deserializing JSON to RawData", e);
+            return objectMapper.readValue(rawDataJson, RawData.class);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Error converting JSON to RawData", e);
         }
     }
 }

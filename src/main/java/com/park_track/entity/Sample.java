@@ -38,7 +38,7 @@ public class Sample {
 	@Column(nullable = false, length = 1)
 	private String aptitudeForTheTest;
 
+	@Column(name = "raw_data", columnDefinition = "jsonb")
 	@Convert(converter = RawDataConverter.class)
-	@Column(nullable = false, name = "raw_data", columnDefinition = "jsonb")
 	private RawData rawData;
 }
