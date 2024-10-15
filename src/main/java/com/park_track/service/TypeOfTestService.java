@@ -29,4 +29,10 @@ public class TypeOfTestService {
 				.description(typeOfTest.getDescription())
 				.build());
 	}
+
+	public Long getTypeOfTestIdByType(String type) {
+		Optional<TypeOfTest> typeOfTestOptional = typeOfTestRepository.findByType(type);
+		return typeOfTestOptional.map(TypeOfTest::getId).orElse(null);
+	}
+
 }

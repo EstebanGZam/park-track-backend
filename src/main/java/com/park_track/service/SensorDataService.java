@@ -17,52 +17,67 @@ import java.time.format.DateTimeParseException;
 @Service
 public class SensorDataService {
 
-    @Autowired
-    private SampleRepository sampleRepository;
+	private final SampleRepository sampleRepository;
+	private final ObjectMapper objectMapper;
+	private final TypeOfTestService typeOfTestService;
+	private final EvaluatedService evaluatedService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
-    public void saveSensorData(SensorDataDTO sensorDataDTO) throws Exception {
-        LocalDateTime parsedDate;
+	@Autowired
+	public SensorDataService(SampleRepository sampleRepository, ObjectMapper objectMapper, TypeOfTestService typeOfTestService, EvaluatedService evaluatedService) {
+		this.sampleRepository = sampleRepository;
+		this.objectMapper = objectMapper;
+		this.typeOfTestService = typeOfTestService;
+		this.evaluatedService = evaluatedService;
+	}
 
-        MetadataDTO metadataDTO = sensorDataDTO.getMetadata();
-        try {
-            if (metadataDTO.getDateAndTime() == null) {
-                throw new IllegalArgumentException("DateAndTime cannot be null");
-            }
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy:HH:mm:ss");
-            parsedDate = LocalDateTime.parse(metadataDTO.getDateAndTime(), formatter);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format. Expected dd/MM/yyyy:HH:mm:ss", e);
-        }
+	public void saveSensorData(SensorDataDTO sensorDataDTO) throws Exception {
+		LocalDateTime parsedDate;
 
-        RawData rawData = sensorDataDTO.getData();
+		MetadataDTO metadataDTO = sensorDataDTO.getMetadata();
+		try {
+			if (metadataDTO.getDateAndTime() == null) {
+				throw new IllegalArgumentException("DateAndTime cannot be null");
+			}
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy:HH:mm:ss");
+			parsedDate = LocalDateTime.parse(metadataDTO.getDateAndTime(), formatter);
+		} catch (DateTimeParseException e) {
+			throw new IllegalArgumentException("Invalid date format. Expected dd/MM/yyyy:HH:mm:ss", e);
+		}
+		Long evaluatedId = evaluatedService.getEvaluatedIdByIdNumber(metadataDTO.getEvaluatedId());
+		Long testTypeId = typeOfTestService.getTypeOfTestIdByType(metadataDTO.getTypeOfTest());
+		if (evaluatedId == null) {
+			throw new IllegalArgumentException("Invalid evaluated id. Test cannot be saved.");
+		}
+		if (testTypeId == null) {
+			throw new IllegalArgumentException("Invalid type of test. Test cannot be saved.");
+		}
+		RawData rawData = sensorDataDTO.getData();
 
-        Sample sample = Sample.builder()
-                .evaluatedId(Long.parseLong(metadataDTO.getEvaluatedId()))
-                .id(generateUniqueId())
-                .testTypeId(1L)
-                .date(Timestamp.valueOf(parsedDate))
-                .onOffState("1")
-                .aptitudeForTheTest("1")
-                .rawData(rawData)
-                .build();
+		Sample sample = Sample.builder()
+				.evaluatedId(evaluatedId)
+				.id(generateUniqueId())
+				.testTypeId(testTypeId)
+				.date(Timestamp.valueOf(parsedDate))
+				.onOffState("1")
+				.aptitudeForTheTest("1")
+				.rawData(rawData)
+				.build();
 
-        String rawDataJson = objectMapper.writeValueAsString(sample.getRawData());
+		String rawDataJson = objectMapper.writeValueAsString(sample.getRawData());
 
-        sampleRepository.insertSampleWithJsonbCast(
-                sample.getEvaluatedId(),
-                sample.getId(),
-                sample.getTestTypeId(),
-                sample.getOnOffState(),
-                sample.getDate(),
-                sample.getAptitudeForTheTest(),
-                rawDataJson
-        );
-    }
+		sampleRepository.insertSampleWithJsonbCast(
+				sample.getEvaluatedId(),
+				sample.getId(),
+				sample.getTestTypeId(),
+				sample.getOnOffState(),
+				sample.getDate(),
+				sample.getAptitudeForTheTest(),
+				rawDataJson
+		);
+	}
 
-    private Long generateUniqueId() {
-        return System.currentTimeMillis();
-    }
+	private Long generateUniqueId() {
+		return System.currentTimeMillis();
+	}
 }

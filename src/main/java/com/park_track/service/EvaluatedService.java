@@ -38,4 +38,9 @@ public class EvaluatedService {
 				.sex(evaluated.getSex().getSex()) // Obtener sexo
 				.build();
 	}
+
+	public Long getEvaluatedIdByIdNumber(String idNumber) {
+		Optional<Evaluated> evaluatedOptional = evaluatedRepository.findByIdNumber(idNumber);
+		return evaluatedOptional.map(Evaluated::getEvaluatorId).orElse(null);
+	}
 }
