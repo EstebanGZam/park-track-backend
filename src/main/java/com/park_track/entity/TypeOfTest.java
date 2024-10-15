@@ -19,4 +19,6 @@ public class TypeOfTest {
 	@Column(nullable = false, length = 100)
 	private String type;
 
+	@Column(nullable = false, length = 200)
+	private String description;
 }
