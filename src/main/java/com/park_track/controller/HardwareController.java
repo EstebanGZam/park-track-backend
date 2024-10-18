@@ -2,6 +2,7 @@ package com.park_track.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.park_track.dto.SampleDTO;
 import com.park_track.dto.SensorDataDTO;
 import com.park_track.service.SensorDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/hardware_controller")
+@CrossOrigin("*")
 public class HardwareController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HardwareController.class);
@@ -41,5 +43,19 @@ public class HardwareController {
 					.body("Error saving data");
 		}
 		return ResponseEntity.ok("Data received and saved successfully!");
+	}
+
+	// Por ahora la muestra se busca por id, que es esa clave compuesta SampleId,
+	// esto lo podemos cambiar mas adelante, de hecho se deberia.
+	@GetMapping("/sample")
+	public ResponseEntity<SampleDTO> getSampleById(@RequestParam("sampleID") long sampleId,
+			@RequestParam("evaluatedId") long evaluatedId, @RequestParam("testTypeId") long testTypeID) {
+		logger.info("endpoint sample hit");
+		SampleDTO sample = sensorDataService.getSampleByID(sampleId, evaluatedId, testTypeID);
+		if (sample == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			return new ResponseEntity<>(sample, HttpStatus.OK);
+		}
 	}
 }

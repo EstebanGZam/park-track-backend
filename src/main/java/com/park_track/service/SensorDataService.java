@@ -3,9 +3,12 @@ package com.park_track.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.park_track.dto.SensorDataDTO;
 import com.park_track.dto.MetadataDTO;
+import com.park_track.dto.SampleDTO;
 import com.park_track.entity.Sample;
+import com.park_track.entity.SampleId;
 import com.park_track.model.RawData;
 import com.park_track.repository.SampleRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,15 +21,13 @@ import java.time.format.DateTimeParseException;
 public class SensorDataService {
 
 	private final SampleRepository sampleRepository;
-	private final ObjectMapper objectMapper;
 	private final TypeOfTestService typeOfTestService;
 	private final EvaluatedService evaluatedService;
 
-
 	@Autowired
-	public SensorDataService(SampleRepository sampleRepository, ObjectMapper objectMapper, TypeOfTestService typeOfTestService, EvaluatedService evaluatedService) {
+	public SensorDataService(SampleRepository sampleRepository, 
+			TypeOfTestService typeOfTestService, EvaluatedService evaluatedService) {
 		this.sampleRepository = sampleRepository;
-		this.objectMapper = objectMapper;
 		this.typeOfTestService = typeOfTestService;
 		this.evaluatedService = evaluatedService;
 	}
@@ -35,6 +36,7 @@ public class SensorDataService {
 		LocalDateTime parsedDate;
 
 		MetadataDTO metadataDTO = sensorDataDTO.getMetadata();
+		// Aqui, obtiene la fecha y evalua que esta sea valida.
 		try {
 			if (metadataDTO.getDateAndTime() == null) {
 				throw new IllegalArgumentException("DateAndTime cannot be null");
@@ -44,6 +46,7 @@ public class SensorDataService {
 		} catch (DateTimeParseException e) {
 			throw new IllegalArgumentException("Invalid date format. Expected dd/MM/yyyy:HH:mm:ss", e);
 		}
+		// Verifica que el evaluado y el tipo de test existan
 		Long evaluatedId = evaluatedService.getEvaluatedIdByIdNumber(metadataDTO.getEvaluatedId());
 		Long testTypeId = typeOfTestService.getTypeOfTestIdByType(metadataDTO.getTypeOfTest());
 		if (evaluatedId == null) {
@@ -52,7 +55,9 @@ public class SensorDataService {
 		if (testTypeId == null) {
 			throw new IllegalArgumentException("Invalid type of test. Test cannot be saved.");
 		}
-		RawData rawData = sensorDataDTO.getData();
+		// Estons son los datos puros que vienen en el objeto data
+		RawData rawDataFromSensor = sensorDataDTO.getData();
+		RawData rawDataConvertedToCommonUnits = rawDataFromSensor.convertToCommonUnits();
 
 		Sample sample = Sample.builder()
 				.evaluatedId(evaluatedId)
@@ -61,23 +66,34 @@ public class SensorDataService {
 				.date(Timestamp.valueOf(parsedDate))
 				.onOffState("1")
 				.aptitudeForTheTest("1")
-				.rawData(rawData)
+				.rawData(rawDataConvertedToCommonUnits)
 				.build();
 
-		String rawDataJson = objectMapper.writeValueAsString(sample.getRawData());
+		// Quite lo que estaba antes aca, debido a que a la hora de guardar se estaba
+		// comiendo decimales
+		// en el cambio a double y m/s^2, es mejor dejar que el repositorio se encargue
+		// de toda la logica de guardado que hacerlo nosotros mismos.
+		sampleRepository.save(sample);
 
-		sampleRepository.insertSampleWithJsonbCast(
-				sample.getEvaluatedId(),
-				sample.getId(),
-				sample.getTestTypeId(),
-				sample.getOnOffState(),
-				sample.getDate(),
-				sample.getAptitudeForTheTest(),
-				rawDataJson
-		);
 	}
 
 	private Long generateUniqueId() {
 		return System.currentTimeMillis();
+	}
+
+	public SampleDTO getSampleByID(long sampleId, long evaluatedId, long testTypeID) {
+		Sample sample = sampleRepository.getReferenceById(new SampleId(sampleId, evaluatedId, testTypeID));
+		if (sample == null) {
+			return null;
+		}
+		return SampleDTO.builder()
+				.id(sample.getId())
+				.evaluatedId(sample.getEvaluatedId())
+				.testTypeId(sample.getTestTypeId())
+				.onOffState(sample.getOnOffState())
+				.date(sample.getDate())
+				.aptitudeForTheTest(sample.getAptitudeForTheTest())
+				.rawData(sample.getRawData()) // You can also choose to map specific fields from rawData
+				.build();
 	}
 }

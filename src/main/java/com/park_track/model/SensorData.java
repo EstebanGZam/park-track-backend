@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class SensorData {
-    private int ax;
-    private int ay;
-    private int az;
-    private int gx;
-    private int gy;
-    private int gz;
+    private double ax;
+    private double ay;
+    private double az;
+    private double gx;
+    private double gy;
+    private double gz;
 }
