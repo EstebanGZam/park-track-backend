@@ -1,6 +1,5 @@
 package com.park_track.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.park_track.dto.SensorDataDTO;
 import com.park_track.dto.MetadataDTO;
 import com.park_track.dto.SampleDTO;
@@ -32,7 +31,7 @@ public class SensorDataService {
 		this.evaluatedService = evaluatedService;
 	}
 
-	public void saveSensorData(SensorDataDTO sensorDataDTO) throws Exception {
+	public void saveSensorData(SensorDataDTO sensorDataDTO) throws IllegalArgumentException {
 		LocalDateTime parsedDate;
 
 		MetadataDTO metadataDTO = sensorDataDTO.getMetadata();

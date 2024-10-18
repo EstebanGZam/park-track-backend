@@ -55,6 +55,7 @@ public class RawData {
                         .gx(gx)
                         .gy(gy)
                         .gz(gz)
+                        .timestamp(rawData.getTimestamp())
                         .build();
 
                 convertedSamples.put(sampleEntry.getKey(), convertedDataSample);

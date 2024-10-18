@@ -2,12 +2,16 @@ package com.park_track.entity;
 
 import com.park_track.model.RawData;
 import com.park_track.model.RawDataConverter;
+import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.sql.Timestamp;
+
+import org.hibernate.annotations.Type;
 
 @Entity
 @Table(name = "samples")
@@ -39,6 +43,6 @@ public class Sample {
 	private String aptitudeForTheTest;
 
 	@Column(name = "raw_data", columnDefinition = "jsonb")
-	@Convert(converter = RawDataConverter.class)
+    @Type(JsonBinaryType.class)  // Usa el tipo JSONB de hibernate-types
 	private RawData rawData;
 }

@@ -17,4 +17,5 @@ public class SensorData {
     private double gx;
     private double gy;
     private double gz;
+    private long timestamp;
 }
