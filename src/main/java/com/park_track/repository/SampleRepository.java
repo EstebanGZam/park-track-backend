@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.Optional;
 
 @Repository
 public interface SampleRepository extends JpaRepository<Sample, SampleId> {
@@ -26,4 +27,6 @@ public interface SampleRepository extends JpaRepository<Sample, SampleId> {
                                    @Param("date") Timestamp date,
                                    @Param("aptitudeForTheTest") String aptitudeForTheTest,
                                    @Param("rawData") String rawData);
+
+    Optional<Sample> findByEvaluatedIdAndIdAndTestTypeId(Long evaluatedId, Long id, Long testTypeId);
 }
