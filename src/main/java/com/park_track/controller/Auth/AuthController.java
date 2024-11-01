@@ -1,4 +1,4 @@
-package com.park_track.Auth;
+package com.park_track.controller.Auth;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
