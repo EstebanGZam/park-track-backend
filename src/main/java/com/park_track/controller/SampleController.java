@@ -25,9 +25,6 @@ public class SampleController {
 			@RequestParam Long id,
 			@RequestParam Long testTypeId) {
 		Long evaluatedId = evaluatedService.getEvaluatedIdByIdNumber(evaluatedIdNumber);
-		System.out.println("evaluatedId = " + evaluatedId);
-        System.out.println("sampleId = " + id);
-        System.out.println("testTypeId = " + testTypeId);
 		boolean deleted = sampleService.deleteSampleIfExists(evaluatedId, id, testTypeId);
 		if (deleted) {
 			return ResponseEntity.ok().build();

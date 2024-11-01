@@ -10,7 +10,7 @@ import com.park_track.JWT.JWTService;
 import com.park_track.dto.AuthResponseDTO;
 import com.park_track.dto.LoginRequestDTO;
 import com.park_track.dto.RegisterRequestDTO;
-import com.park_track.model.User;
+import com.park_track.entity.User;
 import com.park_track.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
