@@ -9,6 +9,6 @@ import com.park_track.entity.Sex;
 @Repository
 public interface SexRepository extends JpaRepository<Sex, Long> {
 
-    @Query("SELECT * FROM Sex s WHERE s.sex = ?1")
+    @Query("SELECT s FROM Sex s WHERE s.sex = ?1")
     Sex findSexByString(String sex);
 }

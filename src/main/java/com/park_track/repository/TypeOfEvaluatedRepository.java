@@ -9,6 +9,6 @@ import com.park_track.entity.TypeOfEvaluated;
 @Repository
 public interface TypeOfEvaluatedRepository extends JpaRepository<TypeOfEvaluated,Long>{
 
-    @Query("SELECT * FROM types_of_evaluated t WHERE t.type = ?1")
+    @Query("SELECT t FROM TypeOfEvaluated t WHERE t.type = ?1")
     TypeOfEvaluated findTypeOfEvaluatedByString(String typeOfEvaluated);
 } 

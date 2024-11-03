@@ -14,8 +14,6 @@ import java.util.Optional;
 public interface EvaluatedRepository extends JpaRepository<Evaluated, Long> {
 	Optional<Evaluated> findByIdNumber(String idNumber); // Buscar evaluado por número de identificación
 
-    List<User> findByRole(Role role);
-
     boolean existsByIdNumber(String id_number);
 
     void deleteByIdNumber(String id_number);
