@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Evaluator {
 	@Id
+	@GeneratedValue
 	private Long id;
 
 	@Column(nullable = false, length = 100)
@@ -25,7 +26,12 @@ public class Evaluator {
 	@Column(nullable = false, length = 100)
 	private String email;
 
-	@Column(nullable = false, length = 100)
-	private String password;
+	@Column(nullable = false)
+	private Boolean isDeleted;
+
+	// Relación uno a uno con User
+	@OneToOne(optional = false)  // El evaluador debe tener un usuario
+	@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
+	private User user;
 
 }

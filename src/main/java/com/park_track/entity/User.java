@@ -3,20 +3,13 @@ package com.park_track.entity;
 import java.util.Collection;
 import java.util.List;
 
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.park_track.model.Role;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,20 +20,28 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = { "username" }) })
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"})})
 public class User implements UserDetails {
-    @Id
-    @GeneratedValue
-    Integer id;
-    @Column(nullable = false)
-    String username;
-    String password;
+	@Id
+	@GeneratedValue
+	private Long id;
 
-    @Enumerated(EnumType.STRING)
-    Role role;
+	@Column(nullable = false)
+	private String username;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
+	@Column(nullable = false)
+	private String password;
+
+	@Enumerated(EnumType.STRING)
+	Role role;
+
+	// Relación uno a uno con Evaluator
+	@OneToOne(mappedBy = "user")  // Un usuario puede o no tener un evaluador
+	private Evaluator evaluator;
+
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return List.of(new SimpleGrantedAuthority(role.name()));
+	}
 }

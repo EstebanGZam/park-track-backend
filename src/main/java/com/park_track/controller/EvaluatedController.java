@@ -1,6 +1,7 @@
 package com.park_track.controller;
 
 import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,36 +24,32 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/evaluated")
 public class EvaluatedController {
 
-    private final EvaluatedService evaluatedService;
+	private final EvaluatedService evaluatedService;
 
-    @GetMapping
-    public ResponseEntity<List<EvaluatedDTO>> getAllEvaluated() {
-        return new ResponseEntity<List<EvaluatedDTO>>(evaluatedService.getAllEvaluated(), HttpStatus.OK);
-    }
+	@GetMapping
+	public ResponseEntity<List<EvaluatedDTO>> getAllEvaluated() {
+		return new ResponseEntity<>(evaluatedService.getAllEvaluated(), HttpStatus.OK);
+	}
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteEvaluated(@PathVariable("id") String idNumber) {
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<Void> deleteEvaluated(@PathVariable("id") String idNumber) {
+		Boolean wasDeleted = evaluatedService.deleteEvaluatedByIdNumber(idNumber);
+		if (wasDeleted) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 
-        Boolean wasDeleted = evaluatedService.deleteEvaluatedByIdNumber(idNumber);
-        if (wasDeleted) {
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+	}
 
-    }
-
-    @PostMapping("/create")
-    public ResponseEntity<Void> createEvaluated(@RequestBody EvaluatedDTO evaluated) {
-        try {
-
-            evaluatedService.createEvaluated(evaluated);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (RuntimeException e) {
-
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        }
-    }
+	@PostMapping("/create")
+	public ResponseEntity<Void> createEvaluated(@RequestBody EvaluatedDTO evaluated) {
+		try {
+			evaluatedService.createEvaluated(evaluated);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (RuntimeException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 }

@@ -15,8 +15,7 @@ import com.park_track.service.AuthService;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Esta clase sera utilizada para las rutas de todo lo que tiene que ver con la
- * autenticacion
+ * This class will be used for routes for everything that has to do with authentication.
  */
 @RestController
 @RequestMapping("/auth")
@@ -24,15 +23,15 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin("*")
 public class AuthController {
 
-    private final AuthService authService;
+	private final AuthService authService;
 
-    @PostMapping("login")
-    public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginRequestDTO request) {
-        return ResponseEntity.ok(authService.login(request));
-    }
+	@PostMapping("login")
+	public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginRequestDTO request) {
+		return ResponseEntity.ok(authService.login(request));
+	}
 
-    @PostMapping("register")
-    public ResponseEntity<AuthResponseDTO> register(@RequestBody RegisterRequestDTO request) {
-        return ResponseEntity.ok(authService.register(request));
-    }
+	@PostMapping("register")
+	public ResponseEntity<AuthResponseDTO> register(@RequestBody RegisterRequestDTO request) {
+		return ResponseEntity.ok(authService.register(request));
+	}
 }

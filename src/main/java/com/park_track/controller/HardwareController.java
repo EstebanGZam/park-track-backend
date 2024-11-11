@@ -17,8 +17,12 @@ public class HardwareController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HardwareController.class);
 
+	private final SensorDataService sensorDataService;
+
 	@Autowired
-	private SensorDataService sensorDataService;
+	public HardwareController(SensorDataService sensorDataService) {
+		this.sensorDataService = sensorDataService;
+	}
 
 	@PostMapping("/receive_data")
 	public ResponseEntity<String> receiveSensorData(@RequestBody SensorDataDTO sensorData) {
@@ -32,11 +36,10 @@ public class HardwareController {
 		return ResponseEntity.ok("Data received and saved successfully!");
 	}
 
-	// Por ahora la muestra se busca por id, que es esa clave compuesta SampleId,
-	// esto lo podemos cambiar mas adelante, de hecho se deberia.
+	// Por ahora la muestra se busca por ID, que es esa clave compuesta SampleId, esto lo podemos cambiar más adelante, de hecho se debería.
 	@GetMapping("/sample")
 	public ResponseEntity<SampleDTO> getSampleById(@RequestParam("sampleID") long sampleId,
-			@RequestParam("evaluatedId") long evaluatedId, @RequestParam("testTypeId") long testTypeID) {
+												   @RequestParam("evaluatedId") long evaluatedId, @RequestParam("testTypeId") long testTypeID) {
 		logger.info("endpoint sample hit");
 		SampleDTO sample = sensorDataService.getSampleByID(sampleId, evaluatedId, testTypeID);
 		if (sample == null) {

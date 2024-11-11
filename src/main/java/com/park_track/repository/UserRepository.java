@@ -9,11 +9,11 @@ import com.park_track.entity.User;
 import com.park_track.model.Role;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
-    Optional<User> findByUsername(String username);
+	Optional<User> findByUsername(String username);
 
-    boolean existsByUsername(String username);
+	boolean existsByUsername(String username);
 
-    List<User> findByRole(Role role);
+	List<User> findByRole(Role role);
 
-    void deleteByUsername(String username);
+	void deleteByUsername(String username);
 }
