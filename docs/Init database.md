@@ -119,6 +119,28 @@ VALUES
  (SELECT id FROM types_of_evaluated WHERE type = 'Control'), 
  (SELECT id FROM sexes WHERE sex = 'Femenino'));
 
+-- Inserts para la tabla USERS
+-- Insertar el primer evaluador
+INSERT INTO users (username, password, role)
+VALUES ('1111222333', 'password123', 'EVALUATOR');
+
+-- Insertar el primer evaluador asociado al usuario con ID 2
+INSERT INTO evaluators (first_name, last_name, email, is_deleted, user_id)
+VALUES ('Carlos', 'Gomez', 'cgomez@example.com', false, 1);
+
+-- Insertar el segundo usuario
+INSERT INTO users (username, password, role)
+VALUES ('3333222111', 'password456', 'EVALUATOR');
+
+-- Insertar el segundo evaluador asociado al usuario con ID 3
+INSERT INTO evaluators (first_name, last_name, email, is_deleted, user_id)
+VALUES ('Maria', 'Lopez', 'mlopez@example.com', false, 2);
+
+INSERT INTO USERS (username, password, role) 
+VALUES ('admin', 'password', 'ADMIN');
+
+SELECT * FROM USERS;
+SELECT * FROM EVALUATORS;
 ```
 
 **IMPORTANTE**: Debido a que la configuración `spring.jpa.hibernate.ddl-auto=create-drop` está habilitada en el archivo
