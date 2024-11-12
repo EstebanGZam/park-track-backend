@@ -1,4 +1,4 @@
-package com.park_track.JWT;
+package com.park_track.jwt;
 
 import java.security.Key;
 import java.util.Date;

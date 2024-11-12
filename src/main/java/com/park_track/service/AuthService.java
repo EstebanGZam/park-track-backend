@@ -5,7 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.park_track.JWT.JWTService;
+import com.park_track.jwt.JWTService;
 import com.park_track.dto.AuthResponseDTO;
 import com.park_track.dto.LoginRequestDTO;
 import com.park_track.repository.UserRepository;

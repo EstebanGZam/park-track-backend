@@ -1,4 +1,4 @@
-package com.park_track.Config;
+package com.park_track.config;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.park_track.JWT.JWTAuthenticationFilter;
+import com.park_track.jwt.JWTAuthenticationFilter;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.cors.CorsConfiguration;

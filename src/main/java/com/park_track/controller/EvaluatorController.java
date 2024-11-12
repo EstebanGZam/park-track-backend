@@ -2,8 +2,8 @@ package com.park_track.controller;
 
 import java.util.List;
 
-import com.park_track.dto.EvaluatorRegisterDTO;
-import com.park_track.dto.EvaluatorResponseDTO;
+import com.park_track.dto.evaluator.EvaluatorRegisterDTO;
+import com.park_track.dto.evaluator.EvaluatorResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

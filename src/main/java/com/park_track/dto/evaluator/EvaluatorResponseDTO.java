@@ -1,4 +1,4 @@
-package com.park_track.dto;
+package com.park_track.dto.evaluator;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

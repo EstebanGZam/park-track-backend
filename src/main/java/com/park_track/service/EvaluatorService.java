@@ -3,8 +3,8 @@ package com.park_track.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.park_track.dto.EvaluatorRegisterDTO;
-import com.park_track.dto.EvaluatorResponseDTO;
+import com.park_track.dto.evaluator.EvaluatorRegisterDTO;
+import com.park_track.dto.evaluator.EvaluatorResponseDTO;
 import com.park_track.entity.Evaluator;
 import com.park_track.mapper.EvaluatorMapper;
 import com.park_track.repository.EvaluatorRepository;

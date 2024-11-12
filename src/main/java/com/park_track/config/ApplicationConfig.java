@@ -1,4 +1,4 @@
-package com.park_track.Config;
+package com.park_track.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
