@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.park_track.dto.AuthResponseDTO;
 import com.park_track.dto.LoginRequestDTO;
-import com.park_track.dto.RegisterRequestDTO;
 import com.park_track.service.AuthService;
 
 import lombok.RequiredArgsConstructor;
@@ -30,8 +29,4 @@ public class AuthController {
 		return ResponseEntity.ok(authService.login(request));
 	}
 
-	@PostMapping("register")
-	public ResponseEntity<AuthResponseDTO> register(@RequestBody RegisterRequestDTO request) {
-		return ResponseEntity.ok(authService.register(request));
-	}
 }

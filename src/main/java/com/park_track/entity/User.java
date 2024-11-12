@@ -10,10 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.park_track.model.Role;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
