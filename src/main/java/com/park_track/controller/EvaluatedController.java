@@ -1,22 +1,17 @@
 package com.park_track.controller;
 
-import java.util.List;
-
+import com.park_track.dto.EvaluatedDTO;
+import com.park_track.dto.evaluatedFilter.EvaluatedFilterDTO;
+import com.park_track.dto.listOfEvaluated.EvaluatedResponseDTO;
+import com.park_track.service.EvaluatedService;
+import com.park_track.service.interfaces.EvaluatedFilterService;
+import com.park_track.service.interfaces.ListOfEvaluatedService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.park_track.dto.EvaluatedDTO;
-import com.park_track.service.EvaluatedService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 @RestController
 @CrossOrigin("*")
@@ -25,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class EvaluatedController {
 
 	private final EvaluatedService evaluatedService;
+	private final EvaluatedFilterService evaluatedFilterService;
+	private final ListOfEvaluatedService listOfEvaluatedService;
 
 	@GetMapping
 	public ResponseEntity<List<EvaluatedDTO>> getAllEvaluated() {
@@ -39,7 +36,6 @@ public class EvaluatedController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-
 	}
 
 	@PostMapping("/create")
@@ -52,4 +48,13 @@ public class EvaluatedController {
 		}
 	}
 
+	@GetMapping("/filter")
+	public ResponseEntity<List<EvaluatedResponseDTO>> getAllEvaluated(EvaluatedFilterDTO filterDTO) {
+		return new ResponseEntity<>(evaluatedFilterService.getAllEvaluated(filterDTO), HttpStatus.OK);
+	}
+
+	@GetMapping("/list")
+	public ResponseEntity<List<EvaluatedResponseDTO>> getAllEvaluatedList() {
+		return new ResponseEntity<>(listOfEvaluatedService.getAllEvaluated(), HttpStatus.OK);
+	}
 }
