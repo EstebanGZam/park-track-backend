@@ -1,6 +1,6 @@
 package com.park_track.service.interfaces;
 
-import com.park_track.dto.listOfEvaluated.EvaluatedResponseDTO;
+import com.park_track.dto.evaluated.EvaluatedResponseDTO;
 
 import java.util.List;
 

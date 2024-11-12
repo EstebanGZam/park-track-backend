@@ -1,6 +1,6 @@
 package com.park_track.controller;
 
-import com.park_track.dto.EvaluatedDTO;
+import com.park_track.dto.evaluated.EvaluatedRegisterDTO;
 import com.park_track.dto.TypeOfTestDTO;
 import com.park_track.service.EvaluatedService;
 import com.park_track.service.TypeOfTestService;
@@ -31,8 +31,8 @@ public class WebController {
 	}
 
 	@GetMapping("/patient/{idNumber}")
-	public ResponseEntity<EvaluatedDTO> getEvaluatedByIdNumber(@PathVariable String idNumber) {
-		Optional<EvaluatedDTO> evaluatedDTOOptional = evaluatedService.getEvaluatedByIdNumber(idNumber);
+	public ResponseEntity<EvaluatedRegisterDTO> getEvaluatedByIdNumber(@PathVariable String idNumber) {
+		Optional<EvaluatedRegisterDTO> evaluatedDTOOptional = evaluatedService.getEvaluatedByIdNumber(idNumber);
 		return evaluatedDTOOptional.map(ResponseEntity::ok)
 				.orElseGet(() -> ResponseEntity.notFound().build());
 	}

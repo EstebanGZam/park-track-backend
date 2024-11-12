@@ -1,4 +1,4 @@
-package com.park_track.exception;
+package com.park_track.exceptions;
 
 public class UsernameAlreadyExistsException extends RuntimeException {
 	public UsernameAlreadyExistsException(String message) {

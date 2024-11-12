@@ -1,5 +1,6 @@
 package com.park_track.dto.evaluator;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,9 +9,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class EvaluatorRegisterDTO {
-	private String id_number;
-	private String first_name;
-	private String last_name;
+	@JsonProperty("id_number")
+	private String idNumber;
+	@JsonProperty("first_name")
+	private String firstName;
+	@JsonProperty("last_name")
+	private String lastName;
 	private String email;
 	private String password;
 	private String role;

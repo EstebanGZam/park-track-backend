@@ -1,8 +1,8 @@
 package com.park_track.controller;
 
-import com.park_track.dto.EvaluatedDTO;
-import com.park_track.dto.evaluatedFilter.EvaluatedFilterDTO;
-import com.park_track.dto.listOfEvaluated.EvaluatedResponseDTO;
+import com.park_track.dto.evaluated.EvaluatedRegisterDTO;
+import com.park_track.dto.evaluated_filter.EvaluatedFilterDTO;
+import com.park_track.dto.evaluated.EvaluatedResponseDTO;
 import com.park_track.service.EvaluatedService;
 import com.park_track.service.interfaces.EvaluatedFilterService;
 import com.park_track.service.interfaces.ListOfEvaluatedService;
@@ -24,7 +24,7 @@ public class EvaluatedController {
 	private final ListOfEvaluatedService listOfEvaluatedService;
 
 	@GetMapping
-	public ResponseEntity<List<EvaluatedDTO>> getAllEvaluated() {
+	public ResponseEntity<List<EvaluatedResponseDTO>> getAllEvaluated() {
 		return new ResponseEntity<>(evaluatedService.getAllEvaluated(), HttpStatus.OK);
 	}
 
@@ -38,14 +38,12 @@ public class EvaluatedController {
 		}
 	}
 
-	@PostMapping("/create")
-	public ResponseEntity<Void> createEvaluated(@RequestBody EvaluatedDTO evaluated) {
-		try {
-			evaluatedService.createEvaluated(evaluated);
-			return new ResponseEntity<>(HttpStatus.OK);
-		} catch (RuntimeException e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	@PostMapping("/add")
+	public ResponseEntity<?> addEvaluated(@RequestBody EvaluatedRegisterDTO evaluatedRegisterDTO) {
+		System.out.println(evaluatedRegisterDTO);
+		EvaluatedResponseDTO createdEvaluated = evaluatedService.createEvaluated(evaluatedRegisterDTO);
+		System.out.println(createdEvaluated);
+		return ResponseEntity.status(HttpStatus.CREATED).body(createdEvaluated);
 	}
 
 	@GetMapping("/filter")

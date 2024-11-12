@@ -7,14 +7,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "evaluated", uniqueConstraints = {@UniqueConstraint(columnNames = { "id_number" })})
+@Table(name = "evaluated", uniqueConstraints = {@UniqueConstraint(columnNames = {"id_number"})})
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Evaluated {
 	@Id
-	private Long evaluatorId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	@Column(nullable = false, length = 100)
 	private String idNumber;

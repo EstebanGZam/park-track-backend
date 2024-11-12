@@ -1,6 +1,6 @@
 package com.park_track.mapper;
 
-import com.park_track.dto.listOfEvaluated.EvaluatedResponseDTO;
+import com.park_track.dto.evaluated.EvaluatedResponseDTO;
 import com.park_track.entity.Evaluated;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

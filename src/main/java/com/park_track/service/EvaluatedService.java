@@ -1,16 +1,22 @@
 package com.park_track.service;
 
-import com.park_track.dto.EvaluatedDTO;
+import com.park_track.dto.evaluated.EvaluatedRegisterDTO;
+import com.park_track.dto.evaluated.EvaluatedResponseDTO;
 import com.park_track.entity.Evaluated;
 import com.park_track.entity.Sex;
 import com.park_track.entity.TypeOfEvaluated;
+import com.park_track.exceptions.SexNotFoundException;
+import com.park_track.exceptions.TypeOfEvaluatedNotFoundException;
+import com.park_track.mapper.EvaluatedMapper;
 import com.park_track.repository.EvaluatedRepository;
 import com.park_track.repository.SexRepository;
 import com.park_track.repository.TypeOfEvaluatedRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,32 +28,25 @@ public class EvaluatedService {
 
 	private final EvaluatedRepository evaluatedRepository;
 	private final SexRepository sexRepository;
-	private final TypeOfEvaluatedRepository typeOfEvaluatedRepository;
+	private TypeOfEvaluatedRepository typeOfEvaluatedRepository;
+	private final EvaluatedMapper evaluatedMapper;
 
-	public Optional<EvaluatedDTO> getEvaluatedByIdNumber(String idNumber) {
-		Optional<Evaluated> evaluatedOptional = evaluatedRepository.findByIdNumber(idNumber);
-		return evaluatedOptional.map(this::convertToDTO);
+	@Autowired
+	public EvaluatedService(EvaluatedRepository evaluatedRepository, SexRepository sexRepository, TypeOfEvaluatedRepository typeOfEvaluatedRepository, EvaluatedMapper evaluatedMapper) {
+		this.evaluatedRepository = evaluatedRepository;
+		this.sexRepository = sexRepository;
+		this.typeOfEvaluatedRepository = typeOfEvaluatedRepository;
+		this.evaluatedMapper = evaluatedMapper;
 	}
 
-	private EvaluatedDTO convertToDTO(Evaluated evaluated) {
-		return EvaluatedDTO.builder()
-				.evaluatorId(evaluated.getEvaluatorId())
-				.idNumber(evaluated.getIdNumber())
-				.firstName(evaluated.getFirstName())
-				.lastName(evaluated.getLastName())
-				.dateOfBirth(evaluated.getDateOfBirth())
-				.email(evaluated.getEmail())
-				.familyHistoryParkinson(evaluated.getFamilyHistoryParkinson())
-				.height(evaluated.getHeight())
-				.weight(evaluated.getWeight())
-				.typeOfEvaluated(evaluated.getTypeOfEvaluated().getType()) // Obtener tipo de evaluado
-				.sex(evaluated.getSex().getSex()) // Obtener sexo
-				.build();
+	public Optional<EvaluatedRegisterDTO> getEvaluatedByIdNumber(String idNumber) {
+		Optional<Evaluated> evaluatedOptional = evaluatedRepository.findByIdNumber(idNumber);
+		return evaluatedOptional.map(evaluatedMapper::convertEvaluatedToDTO);
 	}
 
 	public Long getEvaluatedIdByIdNumber(String idNumber) {
 		Optional<Evaluated> evaluatedOptional = evaluatedRepository.findByIdNumber(idNumber);
-		return evaluatedOptional.map(Evaluated::getEvaluatorId).orElse(null);
+		return evaluatedOptional.map(Evaluated::getId).orElse(null);
 	}
 
 	public Boolean deleteEvaluatedByIdNumber(String id) {
@@ -58,49 +57,42 @@ public class EvaluatedService {
 		return false;
 	}
 
-	public List<EvaluatedDTO> getAllEvaluated() {
-
+	public List<EvaluatedResponseDTO> getAllEvaluated() {
 		List<Evaluated> evaluated = evaluatedRepository.findAll();
-
-		// Convertimos los resultados en una lista con ciertos campos filtrados
+		// Usamos el mapper para convertir los evaluados en EvaluatedResponseDTO
 		return evaluated.stream()
-				.map(user -> EvaluatedDTO.builder()
-						.dateOfBirth(user.getDateOfBirth())
-						.email(user.getEmail())
-						.familyHistoryParkinson(user.getFamilyHistoryParkinson())
-						.firstName(user.getFirstName())
-						.height(user.getHeight())
-						.idNumber(user.getIdNumber())
-						.lastName(user.getLastName())
-						.weight(user.getWeight())
-						.build())
+				.map(evaluatedMapper::toEvaluatedResponseDTO)  // Usamos el Mapper para la conversión
 				.collect(Collectors.toList());
 	}
 
-	public void createEvaluated(EvaluatedDTO evaluated) {
-		Sex sex = sexRepository.findSexByString(evaluated.getSex());
-		TypeOfEvaluated typeOfEvaluated = typeOfEvaluatedRepository
-				.findTypeOfEvaluatedByString(evaluated.getTypeOfEvaluated());
-
-		if (sex == null || typeOfEvaluated == null) {
-			throw new RuntimeException("sex or typeOfEvaluated not found not found");
+	@Transactional
+	public EvaluatedResponseDTO createEvaluated(EvaluatedRegisterDTO evaluatedRegisterDTO) {
+		Sex sex = sexRepository.findSexByString(evaluatedRegisterDTO.getSex());
+		if (sex == null) {
+			throw new SexNotFoundException("Sex not found: " + evaluatedRegisterDTO.getSex());
 		}
 
-		Evaluated evaluatedBeinCreated = Evaluated.builder()
-				.evaluatorId(evaluated.getEvaluatorId())
-				.dateOfBirth(evaluated.getDateOfBirth())
-				.email(evaluated.getEmail())
-				.familyHistoryParkinson(evaluated.getFamilyHistoryParkinson())
-				.firstName(evaluated.getFirstName())
-				.height(evaluated.getHeight())
-				.idNumber(evaluated.getIdNumber())
-				.lastName(evaluated.getLastName())
-				.weight(evaluated.getWeight())
+		TypeOfEvaluated typeOfEvaluated = typeOfEvaluatedRepository
+				.findTypeOfEvaluatedByString(evaluatedRegisterDTO.getTypeOfEvaluated());
+		if (typeOfEvaluated == null) {
+			throw new TypeOfEvaluatedNotFoundException("Type of Evaluated not found: " + evaluatedRegisterDTO.getTypeOfEvaluated());
+		}
+
+		Evaluated evaluated = Evaluated.builder()
+				.idNumber(evaluatedRegisterDTO.getIdNumber())
+				.dateOfBirth(evaluatedRegisterDTO.getDateOfBirth())
+				.email(evaluatedRegisterDTO.getEmail())
+				.familyHistoryParkinson(evaluatedRegisterDTO.getFamilyHistoryParkinson())
+				.firstName(evaluatedRegisterDTO.getFirstName())
+				.lastName(evaluatedRegisterDTO.getLastName())
+				.height(evaluatedRegisterDTO.getHeight())
+				.weight(evaluatedRegisterDTO.getWeight())
 				.sex(sex)
 				.typeOfEvaluated(typeOfEvaluated)
 				.build();
 
-		evaluatedRepository.save(evaluatedBeinCreated);
+		Evaluated savedEvaluated = evaluatedRepository.save(evaluated);
 
+		return evaluatedMapper.toEvaluatedResponseDTO(savedEvaluated);
 	}
 }

@@ -1,4 +1,4 @@
-package com.park_track.dto.evaluatedFilter;
+package com.park_track.dto.evaluated_filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

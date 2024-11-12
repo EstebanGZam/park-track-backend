@@ -1,7 +1,7 @@
 package com.park_track.service.impl;
 
-import com.park_track.dto.evaluatedFilter.EvaluatedFilterDTO;
-import com.park_track.dto.listOfEvaluated.EvaluatedResponseDTO;
+import com.park_track.dto.evaluated_filter.EvaluatedFilterDTO;
+import com.park_track.dto.evaluated.EvaluatedResponseDTO;
 import com.park_track.mapper.EvaluatedFilterMapper;
 import com.park_track.repository.EvaluatedRepository;
 import com.park_track.service.interfaces.EvaluatedFilterService;

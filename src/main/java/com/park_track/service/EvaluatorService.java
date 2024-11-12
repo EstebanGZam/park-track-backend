@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import com.park_track.dto.evaluator.EvaluatorRegisterDTO;
 import com.park_track.dto.evaluator.EvaluatorResponseDTO;
 import com.park_track.entity.Evaluator;
-import com.park_track.exception.UsernameAlreadyExistsException;
+import com.park_track.exceptions.UsernameAlreadyExistsException;
 import com.park_track.mapper.EvaluatorMapper;
 import com.park_track.repository.EvaluatorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +36,9 @@ public class EvaluatorService {
 	}
 
 	public List<UserDTO> getAllEvaluators() {
-		List<User> doctors = userRepository.findByRole(Role.EVALUATOR);
+		List<User> evaluators = userRepository.findByRole(Role.EVALUATOR);
 		// We convert the results into a list of UserDTO
-		return doctors.stream()
+		return evaluators.stream()
 				.map(user -> UserDTO.builder()
 						.username(user.getUsername())
 						.build())
@@ -56,12 +56,12 @@ public class EvaluatorService {
 	@Transactional
 	public EvaluatorResponseDTO createEvaluator(EvaluatorRegisterDTO evaluatorRegisterDTO) {
 		// Verificar si el username ya existe
-		if (userRepository.existsByUsername(evaluatorRegisterDTO.getId_number())) {
-			throw new UsernameAlreadyExistsException("El nombre de usuario " + evaluatorRegisterDTO.getId_number() + " ya está en uso.");
+		if (userRepository.existsByUsername(evaluatorRegisterDTO.getIdNumber())) {
+			throw new UsernameAlreadyExistsException("El nombre de usuario " + evaluatorRegisterDTO.getIdNumber() + " ya está en uso.");
 		}
 		// Crear el objeto User
 		User user = User.builder()
-				.username(evaluatorRegisterDTO.getId_number())
+				.username(evaluatorRegisterDTO.getIdNumber())
 				.password(passwordEncoder.encode(evaluatorRegisterDTO.getPassword()))
 				.role(Role.valueOf(evaluatorRegisterDTO.getRole()))  // Asegúrate de que el rol en el DTO coincida con el enum Role
 				.build();
@@ -71,9 +71,9 @@ public class EvaluatorService {
 
 		// Crear el objeto Evaluator y asignar el usuario
 		Evaluator evaluator = Evaluator.builder()
-				.idNumber(evaluatorRegisterDTO.getId_number())
-				.firstName(evaluatorRegisterDTO.getFirst_name())
-				.lastName(evaluatorRegisterDTO.getLast_name())
+				.idNumber(evaluatorRegisterDTO.getIdNumber())
+				.firstName(evaluatorRegisterDTO.getFirstName())
+				.lastName(evaluatorRegisterDTO.getLastName())
 				.email(evaluatorRegisterDTO.getEmail())
 				.isDeleted(false)  // Por defecto no está eliminado
 				.user(user)  // Asignar el User recién creado
