@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.park_track.dto.evaluator.EvaluatorRegisterDTO;
 import com.park_track.dto.evaluator.EvaluatorResponseDTO;
 import com.park_track.entity.Evaluator;
+import com.park_track.exception.UsernameAlreadyExistsException;
 import com.park_track.mapper.EvaluatorMapper;
 import com.park_track.repository.EvaluatorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,10 @@ public class EvaluatorService {
 
 	@Transactional
 	public EvaluatorResponseDTO createEvaluator(EvaluatorRegisterDTO evaluatorRegisterDTO) {
+		// Verificar si el username ya existe
+		if (userRepository.existsByUsername(evaluatorRegisterDTO.getId_number())) {
+			throw new UsernameAlreadyExistsException("El nombre de usuario " + evaluatorRegisterDTO.getId_number() + " ya está en uso.");
+		}
 		// Crear el objeto User
 		User user = User.builder()
 				.username(evaluatorRegisterDTO.getId_number())
