@@ -63,7 +63,7 @@ public class EvaluatorService {
 		User user = User.builder()
 				.username(evaluatorRegisterDTO.getIdNumber())
 				.password(passwordEncoder.encode(evaluatorRegisterDTO.getPassword()))
-				.role(Role.valueOf(evaluatorRegisterDTO.getRole()))  // Asegúrate de que el rol en el DTO coincida con el enum Role
+				.role(Role.valueOf(evaluatorRegisterDTO.getRole()))  
 				.build();
 
 		// Guardar ambos objetos en la base de datos

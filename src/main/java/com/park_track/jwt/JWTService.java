@@ -9,6 +9,8 @@ import java.util.function.Function;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.park_track.entity.User;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -25,6 +27,9 @@ public class JWTService {
 	}
 
 	private String getToken(Map<String, Object> extraClaims, UserDetails user) {
+		User userWithRole = (User) user;
+		extraClaims.put("role", userWithRole.getRole());
+
 		return Jwts
 				.builder()
 				.claims(extraClaims)
