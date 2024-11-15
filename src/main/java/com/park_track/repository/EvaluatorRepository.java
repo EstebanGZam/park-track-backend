@@ -4,4 +4,10 @@ import com.park_track.entity.Evaluator;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EvaluatorRepository extends JpaRepository<Evaluator, Long> {
+
+
+	void deleteByIdNumber(String idNumber);
+    
+
+	boolean existsByIdNumber(String idNumber);
 }

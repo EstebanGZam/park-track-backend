@@ -1,7 +1,6 @@
 package com.park_track.entity;
 
 import com.park_track.model.RawData;
-import com.park_track.model.RawDataConverter;
 import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 
 import jakarta.persistence.*;

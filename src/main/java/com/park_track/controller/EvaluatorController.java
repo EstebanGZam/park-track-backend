@@ -26,9 +26,9 @@ public class EvaluatorController {
 		return new ResponseEntity<>(evaluatorService.getAllEvaluators(), HttpStatus.OK);
 	}
 
-	@DeleteMapping("/delete/{username}")
-	public ResponseEntity<Void> deleteEvaluator(@PathVariable("username") String username) {
-		Boolean wasDeleted = evaluatorService.deleteEvaluatorByUsername(username);
+	@DeleteMapping("/delete/{id_number}")
+	public ResponseEntity<Void> deleteEvaluator(@PathVariable("id_number") String id_number) {
+		Boolean wasDeleted = evaluatorService.deleteEvaluatorByIdNumber(id_number);
 		return wasDeleted ? new ResponseEntity<>(HttpStatus.OK) :
 				new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
@@ -38,4 +38,5 @@ public class EvaluatorController {
 		EvaluatorResponseDTO createdEvaluator = evaluatorService.createEvaluator(evaluatorRegisterDTO);
 		return ResponseEntity.status(HttpStatus.CREATED).body(createdEvaluator);
 	}
+
 }

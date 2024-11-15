@@ -9,7 +9,6 @@ import com.park_track.entity.Evaluator;
 import com.park_track.exceptions.UsernameAlreadyExistsException;
 import com.park_track.mapper.EvaluatorMapper;
 import com.park_track.repository.EvaluatorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class EvaluatorService {
-	private EvaluatorRepository evaluatorRepository;
+	private final EvaluatorRepository evaluatorRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final UserRepository userRepository;
-
-	@Autowired
-	public EvaluatorService(EvaluatorRepository evaluatorRepository, PasswordEncoder passwordEncoder, UserRepository userRepository) {
-		this.evaluatorRepository = evaluatorRepository;
-		this.passwordEncoder = passwordEncoder;
-		this.userRepository = userRepository;
-	}
 
 	public List<UserDTO> getAllEvaluators() {
 		List<User> evaluators = userRepository.findByRole(Role.EVALUATOR);
@@ -45,9 +37,10 @@ public class EvaluatorService {
 				.collect(Collectors.toList());
 	}
 
-	public Boolean deleteEvaluatorByUsername(String username) {
-		if (userRepository.existsByUsername(username)) {
-			userRepository.deleteByUsername(username);
+	@Transactional
+	public Boolean deleteEvaluatorByIdNumber(String id_number) {
+		if (evaluatorRepository.existsByIdNumber(id_number)) {
+			evaluatorRepository.deleteByIdNumber(id_number);
 			return true;
 		}
 		return false;

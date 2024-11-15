@@ -1,5 +1,8 @@
 package com.park_track.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,8 +32,8 @@ public class Evaluator {
 	@Column(nullable = false)
 	private Boolean isDeleted;
 
-	// Relación uno a uno con User
 	@OneToOne(optional = false)  // El evaluador debe tener un usuario
+	@OnDelete(action = OnDeleteAction.CASCADE) //Si se borra el evaluador se debe borrar tambien si usuario
 	@JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false, unique = true)
 	private User user;
 
