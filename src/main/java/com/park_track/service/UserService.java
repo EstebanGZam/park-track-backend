@@ -21,9 +21,26 @@ public class UserService {
         this.evaluatedRepository = evaluatedRepository;
     }
 
+    public List<UserResponseDTO> getFilteredUsers(String role, String typeOfEvaluated) {
+        List<UserResponseDTO> users = new ArrayList<>();
+        if(role != null) {
+            List<Evaluator> evaluators = evaluatorRepository.findAll();
+            for (Evaluator evaluator : evaluators) {
+                users.add(UserMapper.toUserResponseDTO(evaluator));
+            }
+        }else if(typeOfEvaluated != null) {
+            List<Evaluated> evaluateds = evaluatedRepository.findByTypeOfEvaluated(typeOfEvaluated);
+            for (Evaluated evaluated : evaluateds) {
+                users.add(UserMapper.toUserResponseDTO(evaluated));
+            }
+        }else {
+            users = getAllUsers();
+        }
+        return users;
+    }
+
     public List<UserResponseDTO> getAllUsers() {
         List<UserResponseDTO> users = new ArrayList<>();
-
         List<Evaluator> evaluators = evaluatorRepository.findAll();
         for (Evaluator evaluator : evaluators) {
             users.add(UserMapper.toUserResponseDTO(evaluator));
@@ -33,7 +50,6 @@ public class UserService {
         for (Evaluated evaluated : evaluateds) {
             users.add(UserMapper.toUserResponseDTO(evaluated));
         }
-
         return users;
     }
 }

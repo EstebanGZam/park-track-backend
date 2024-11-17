@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class EvaluatedResponseDTO {
 	private Long id;
 	private String idNumber;
-	private String typeOfEvaluated;
 	private String firstName;
 	private String lastName;
 	private String email;
+	private String typeOfEvaluated;
 }

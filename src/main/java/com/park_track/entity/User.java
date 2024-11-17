@@ -33,7 +33,8 @@ public class User implements UserDetails {
 	Role role;
 
 	// Relación uno a uno con Evaluator
-	@OneToOne(mappedBy = "user")  // Un usuario puede o no tener un evaluador
+	@Getter
+    @OneToOne(mappedBy = "user")  // Un usuario puede o no tener un evaluador
 	private Evaluator evaluator;
 
 

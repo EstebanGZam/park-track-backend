@@ -13,7 +13,8 @@ public class UserMapper {
                 evaluator.getFirstName(),
                 evaluator.getLastName(),
                 evaluator.getEmail(),
-                "EVALUATOR"
+                null,
+                evaluator.getUser().getRole().name()
         );
     }
 
@@ -25,7 +26,8 @@ public class UserMapper {
                 evaluated.getFirstName(),
                 evaluated.getLastName(),
                 evaluated.getEmail(),
-                "EVALUATED"
+                evaluated.getTypeOfEvaluated().getType(),
+                null
         );
     }
 }
