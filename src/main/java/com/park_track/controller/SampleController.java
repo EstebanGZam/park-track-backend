@@ -1,14 +1,17 @@
 package com.park_track.controller;
 
+import com.park_track.dto.sample.SampleListDTO;
 import com.park_track.service.EvaluatedService;
 import com.park_track.service.SampleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api")
-@CrossOrigin(maxAge = 3600)
+@RequestMapping("sample")
+@CrossOrigin("*")
 public class SampleController {
 	private final SampleService sampleService;
 	private final EvaluatedService evaluatedService;
@@ -31,5 +34,11 @@ public class SampleController {
 		} else {
 			return ResponseEntity.notFound().build();
 		}
+	}
+
+	@GetMapping("/{evaluatedId}")
+	public ResponseEntity<List<SampleListDTO>> getSamplesByEvaluatedId(@PathVariable Long evaluatedId) {
+		List<SampleListDTO> samples = sampleService.getSamplesByEvaluatedId(evaluatedId);
+		return ResponseEntity.ok(samples);
 	}
 }
