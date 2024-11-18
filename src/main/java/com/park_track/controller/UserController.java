@@ -2,10 +2,7 @@ package com.park_track.controller;
 
 import com.park_track.dto.UserResponseDTO;
 import com.park_track.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,5 +22,14 @@ public class UserController {
             @RequestParam(value = "typeOfEvaluated", required = false) String typeOfEvaluated
     ) {
         return userService.getFilteredUsers(role, typeOfEvaluated);
+    }
+
+    @DeleteMapping("/userlist/delete/{idNumber}")
+    public void deleteUser(
+            @PathVariable String idNumber,
+            @RequestParam(value = "role", required = false) String role,
+            @RequestParam(value = "typeOfEvaluated", required = false) String typeOfEvaluated
+    ) {
+        userService.deleteUser(idNumber, role, typeOfEvaluated);
     }
 }
