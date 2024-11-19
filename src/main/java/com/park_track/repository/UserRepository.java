@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.park_track.entity.User;
 import com.park_track.model.Role;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, Integer> {
 	Optional<User> findByUsername(String username);
@@ -15,6 +17,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
 
 	List<User> findByRole(Role role);
+
 
 	void deleteByUsername(String username);
 

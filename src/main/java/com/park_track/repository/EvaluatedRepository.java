@@ -18,6 +18,9 @@ public interface EvaluatedRepository extends JpaRepository<Evaluated, Long> {
 
     void deleteByIdNumber(String id_number);
 
+    @Query("SELECT e FROM Evaluated e WHERE e.typeOfEvaluated.type = :type")
+    List<Evaluated> findByTypeOfEvaluated(@Param("type") String type);
+
     @Query("SELECT e FROM Evaluated e WHERE " +
             "(COALESCE(:startDate, NULL) IS NULL OR e.dateOfBirth >= :startDate) AND " +
             "(COALESCE(:endDate, NULL) IS NULL OR e.dateOfBirth <= :endDate) AND " +

@@ -15,10 +15,10 @@ public class EvaluatorMapper {
 		return new EvaluatorResponseDTO(
 				evaluator.getId(),
 				evaluator.getIdNumber(),
-				evaluator.getUser().getRole().name(),
 				evaluator.getFirstName(),
 				evaluator.getLastName(),
-				evaluator.getEmail()
+				evaluator.getEmail(),
+				evaluator.getUser().getRole().name()
 		);
 	}
 

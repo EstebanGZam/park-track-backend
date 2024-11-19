@@ -20,10 +20,10 @@ public class EvaluatedMapper {
 		return new EvaluatedResponseDTO(
 				evaluated.getId(),
 				evaluated.getIdNumber(),
-				evaluated.getTypeOfEvaluated().getType(),
 				evaluated.getFirstName(),
 				evaluated.getLastName(),
-				evaluated.getEmail()
+				evaluated.getEmail(),
+				evaluated.getTypeOfEvaluated().getType()
 		);
 	}
 

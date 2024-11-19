@@ -51,6 +51,7 @@ public class EvaluatedService {
 		return evaluatedOptional.map(Evaluated::getId).orElse(null);
 	}
 
+	@Transactional
 	public Boolean deleteEvaluatedByIdNumber(String id) {
 		if (evaluatedRepository.existsByIdNumber(id)) {
 			evaluatedRepository.deleteByIdNumber(id);
