@@ -36,7 +36,7 @@ public class SampleController {
 		}
 	}
 
-	@GetMapping("/{evaluatedId}")
+	@GetMapping("/samples/{evaluatedId}")
 	public ResponseEntity<List<SampleListDTO>> getSamplesByEvaluatedId(@PathVariable Long evaluatedId) {
 		List<SampleListDTO> samples = sampleService.getSamplesByEvaluatedId(evaluatedId);
 		return ResponseEntity.ok(samples);
