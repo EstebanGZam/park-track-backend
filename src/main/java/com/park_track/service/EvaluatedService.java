@@ -1,5 +1,7 @@
 package com.park_track.service;
 
+
+import com.park_track.dto.evaluated.EvaluatedRegisterCamelCaseDTO;
 import com.park_track.dto.evaluated.EvaluatedRegisterDTO;
 import com.park_track.dto.evaluated.EvaluatedResponseDTO;
 import com.park_track.entity.Evaluated;
@@ -57,6 +59,7 @@ public class EvaluatedService {
 		return false;
 	}
 
+
 	public List<EvaluatedResponseDTO> getAllEvaluated() {
 		List<Evaluated> evaluated = evaluatedRepository.findAll();
 		// Usamos el mapper para convertir los evaluados en EvaluatedResponseDTO
@@ -95,4 +98,21 @@ public class EvaluatedService {
 
 		return evaluatedMapper.toEvaluatedResponseDTO(savedEvaluated);
 	}
+	public EvaluatedRegisterCamelCaseDTO convertToCamelCaseDTO(EvaluatedRegisterDTO dto) {
+		return EvaluatedRegisterCamelCaseDTO.builder()
+				.idNumber(dto.getIdNumber())
+				.firstName(dto.getFirstName())
+				.lastName(dto.getLastName())
+				.dateOfBirth(dto.getDateOfBirth())
+				.email(dto.getEmail())
+				.familyHistoryParkinson(dto.getFamilyHistoryParkinson())
+				.height(dto.getHeight())
+				.weight(dto.getWeight())
+				.typeOfEvaluated(dto.getTypeOfEvaluated())
+				.sex(dto.getSex())
+				.build();
+	}
+
+
+
 }

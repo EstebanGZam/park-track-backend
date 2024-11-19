@@ -21,4 +21,5 @@ public class EvaluatorMapper {
 				evaluator.getEmail()
 		);
 	}
+
 }

@@ -1,5 +1,6 @@
 package com.park_track.mapper;
 
+import com.park_track.dto.evaluated.EvaluatedRegisterCamelCaseDTO;
 import com.park_track.dto.evaluated.EvaluatedRegisterDTO;
 import com.park_track.dto.evaluated.EvaluatedResponseDTO;
 import com.park_track.entity.Evaluated;
@@ -40,4 +41,6 @@ public class EvaluatedMapper {
 				.sex(evaluated.getSex().getSex()) // Obtener sexo
 				.build();
 	}
+
+
 }

@@ -75,6 +75,4 @@ public class EvaluatorService {
 
 		return EvaluatorMapper.toEvaluatorResponseDTO(savedEvaluator);
 	}
-
-
 }
