@@ -47,8 +47,11 @@ public class SampleService {
                     return SampleListDTO.builder()
                             .id(sample.getId())
                             .date(sample.getDate())
+                            .typeOfTestId(sample.getTestTypeId())
                             .description(sample.getAptitudeForTheTest())
                             .onOffState(sample.getOnOffState())
+                            .rawData(sample.getRawData())
+                            .aptitudeForTheTest(sample.getAptitudeForTheTest())
                             .comments(comments)
                             .build();
                 })
