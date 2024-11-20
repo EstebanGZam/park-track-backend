@@ -19,3 +19,88 @@ VALUES ('1234567890', 'Juan', 'Pérez', TO_DATE('1985-04-12', 'YYYY-MM-DD'), 'ju
 INSERT INTO evaluated (id_number, first_name, last_name, date_of_birth, email, family_history_parkinson, height, weight, type_of_evaluated_id, sex_id)
 VALUES ('0987654321', 'María', 'Gómez', TO_DATE('1990-05-22', 'YYYY-MM-DD'), 'maria.gomez@example.com', 'S', 1.65, 60.0, (SELECT id FROM types_of_evaluated WHERE type = 'Control'), (SELECT id FROM sexes WHERE sex = 'Femenino'));
 
+INSERT INTO samples (id, evaluated_id, test_type_id, on_off_state, date, aptitude_for_the_test, raw_data)
+VALUES
+    (1,
+     (SELECT id FROM evaluated WHERE id_number = '1234567890'),
+     (SELECT id FROM types_of_test WHERE type = 'foot-tapping'),
+     'N',
+     TIMESTAMP '2024-03-15 10:00:00',
+     'A',
+     '{
+        "sensors": {
+          "sensor1": {
+            "sample1": {
+              "ax": 16384.0,
+              "ay": -8192.0,
+              "az": 32768.0,
+              "gx": 131.0,
+              "gy": -262.0,
+              "gz": 524.0,
+              "timestamp": 1710489600000
+            },
+            "sample2": {
+              "ax": 24576.0,
+              "ay": -4096.0,
+              "az": 28672.0,
+              "gx": 262.0,
+              "gy": -131.0,
+              "gz": 393.0,
+              "timestamp": 1710489600100
+            }
+          }
+        }
+      }'::jsonb
+    );
+
+INSERT INTO samples (id, evaluated_id, test_type_id, on_off_state, date, aptitude_for_the_test, raw_data)
+VALUES
+    (2,
+     (SELECT id FROM evaluated WHERE id_number = '0987654321'),
+     (SELECT id FROM types_of_test WHERE type = 'heel-tapping'),
+     'N',
+     TIMESTAMP '2024-03-15 11:00:00',
+     'A',
+     '{
+        "sensors": {
+          "sensor1": {
+            "sample1": {
+              "ax": 20480.0,
+              "ay": -6144.0,
+              "az": 30720.0,
+              "gx": 196.0,
+              "gy": -196.0,
+              "gz": 458.0,
+              "timestamp": 1710493200000
+            },
+            "sample2": {
+              "ax": 28672.0,
+              "ay": -2048.0,
+              "az": 26624.0,
+              "gx": 327.0,
+              "gy": -65.0,
+              "gz": 327.0,
+              "timestamp": 1710493200100
+            }
+          }
+        }
+      }'::jsonb
+    );
+
+INSERT INTO observation_notes (id, sample_evaluated_id, sample_id, sample_test_type_id, description)
+VALUES
+    (1,
+     (SELECT id FROM evaluated WHERE id_number = '1234567890'), -- sample_evaluated_id
+     1, -- sample_id
+     (SELECT id FROM types_of_test WHERE type = 'foot-tapping'), -- sample_test_type_id
+     'El paciente mostró fatiga después de 30 segundos de la prueba'
+    );
+
+INSERT INTO observation_notes (id, sample_evaluated_id, sample_id, sample_test_type_id, description)
+VALUES
+    (2,
+     (SELECT id FROM evaluated WHERE id_number = '0987654321'), -- sample_evaluated_id
+     2, -- sample_id
+     (SELECT id FROM types_of_test WHERE type = 'heel-tapping'), -- sample_test_type_id
+     'La prueba se completó sin inconvenientes, buena coordinación'
+    );
