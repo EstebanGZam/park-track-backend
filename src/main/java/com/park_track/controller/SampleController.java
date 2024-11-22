@@ -41,4 +41,19 @@ public class SampleController {
 		List<SampleListDTO> samples = sampleService.getSamplesByEvaluatedId(evaluatedId);
 		return ResponseEntity.ok(samples);
 	}
+
+	@PutMapping("/samples/{evaluatedIdNumber}/{SampleId}/{testTypeId}")
+	public ResponseEntity<?> updateSample(
+			@PathVariable String evaluatedId,
+			@PathVariable Long sampleId,
+			@PathVariable Long testTypeId,
+			@RequestBody Sample updatedSample
+	) {
+		boolean updated = sampleService.updateSample(evaluatedId, sampleId, testTypeId, updatedSample);
+		if (updated) {
+			return ResponseEntity.ok().build();
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
 }

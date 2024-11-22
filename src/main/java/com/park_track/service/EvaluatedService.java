@@ -99,6 +99,7 @@ public class EvaluatedService {
 
 		return evaluatedMapper.toEvaluatedResponseDTO(savedEvaluated);
 	}
+
 	public EvaluatedRegisterCamelCaseDTO convertToCamelCaseDTO(EvaluatedRegisterDTO dto) {
 		return EvaluatedRegisterCamelCaseDTO.builder()
 				.idNumber(dto.getIdNumber())
@@ -113,7 +114,5 @@ public class EvaluatedService {
 				.sex(dto.getSex())
 				.build();
 	}
-
-
 
 }

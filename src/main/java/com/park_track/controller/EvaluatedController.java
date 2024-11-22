@@ -59,8 +59,9 @@ public class EvaluatedController {
 	public ResponseEntity<List<EvaluatedResponseDTO>> getAllEvaluatedList() {
 		return new ResponseEntity<>(listOfEvaluatedService.getAllEvaluated(), HttpStatus.OK);
 	}
+
 	@GetMapping("/details/{idNumber}")
-	public ResponseEntity<EvaluatedRegisterCamelCaseDTO> getEvaluatedByIdNumber(@PathVariable String idNumber) {
+	public ResponseEntity<EvaluatedRegisterCamelCaseDTO> getEvaluatedDetails(@PathVariable String idNumber) {
 		Optional<EvaluatedRegisterDTO> evaluatedDTOOptional = evaluatedService.getEvaluatedByIdNumber(idNumber);
 		return evaluatedDTOOptional.map(dto -> ResponseEntity.ok(evaluatedService.convertToCamelCaseDTO(dto)))
 				.orElseGet(() -> ResponseEntity.notFound().build());
