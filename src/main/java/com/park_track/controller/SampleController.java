@@ -42,7 +42,7 @@ public class SampleController {
 		return ResponseEntity.ok(samples);
 	}
 
-	@PutMapping("/samples/{evaluatedIdNumber}/{SampleId}/{testTypeId}")
+	/*@PutMapping("/samples/{evaluatedIdNumber}/{SampleId}/{testTypeId}")
 	public ResponseEntity<?> updateSample(
 			@PathVariable String evaluatedId,
 			@PathVariable Long sampleId,
@@ -56,4 +56,5 @@ public class SampleController {
 			return ResponseEntity.notFound().build();
 		}
 	}
+	*/
 }
