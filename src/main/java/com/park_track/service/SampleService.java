@@ -57,4 +57,8 @@ public class SampleService {
                 })
                 .collect(Collectors.toList());
     }
+
+    public Sample getLastSampleByEvaluatedId(Long evaluatedId) {
+        return sampleRepository.findTopByEvaluatedIdOrderByDateDesc(evaluatedId);
+    }
 }

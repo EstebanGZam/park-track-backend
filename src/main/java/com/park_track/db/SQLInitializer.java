@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +23,15 @@ public class SQLInitializer {
 	}
 
 	private void loadImportSql() throws IOException {
-		String sql = new String(Files.readAllBytes(Paths.get("src/main/resources/sql/data.sql")));
-		jdbcTemplate.execute(sql);
+		try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream("sql/data.sql")) {
+			if (inputStream == null) {
+				throw new IllegalArgumentException("Archivo 'sql/data.sql' no encontrado en el classpath");
+			}
+			// Leer el contenido del archivo como String
+			String sql = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+			// Ejecutar el contenido del archivo SQL
+			jdbcTemplate.execute(sql);
+		}
 	}
 
 }

@@ -5,7 +5,6 @@ import com.park_track.dto.evaluated.EvaluatedRegisterCamelCaseDTO;
 import com.park_track.dto.evaluated.EvaluatedRegisterDTO;
 import com.park_track.dto.evaluated_filter.EvaluatedFilterDTO;
 import com.park_track.dto.evaluated.EvaluatedResponseDTO;
-import com.park_track.entity.Evaluated;
 import com.park_track.service.EvaluatedService;
 import com.park_track.service.interfaces.EvaluatedFilterService;
 import com.park_track.service.interfaces.ListOfEvaluatedService;

@@ -35,7 +35,7 @@ public class SensorDataService {
 		LocalDateTime parsedDate;
 
 		MetadataDTO metadataDTO = sensorDataDTO.getMetadata();
-		// Aqui, obtiene la fecha y evalua que esta sea valida.
+		// Aquí, obtiene la fecha y evalúa que esta sea valida.
 		try {
 			if (metadataDTO.getDateAndTime() == null) {
 				throw new IllegalArgumentException("DateAndTime cannot be null");
@@ -54,7 +54,7 @@ public class SensorDataService {
 		if (testTypeId == null) {
 			throw new IllegalArgumentException("Invalid type of test. Test cannot be saved.");
 		}
-		// Estons son los datos puros que vienen en el objeto data
+		// Estos son los datos puros que vienen en el objeto data
 		RawData rawDataFromSensor = sensorDataDTO.getData();
 		RawData rawDataConvertedToCommonUnits = rawDataFromSensor.convertToCommonUnits();
 
@@ -71,7 +71,7 @@ public class SensorDataService {
 		// Quite lo que estaba antes aca, debido a que a la hora de guardar se estaba
 		// comiendo decimales
 		// en el cambio a double y m/s^2, es mejor dejar que el repositorio se encargue
-		// de toda la logica de guardado que hacerlo nosotros mismos.
+		// de toda la lógica de guardado que hacerlo nosotros mismos.
 		sampleRepository.save(sample);
 
 	}
@@ -82,9 +82,6 @@ public class SensorDataService {
 
 	public SampleDTO getSampleByID(long sampleId, long evaluatedId, long testTypeID) {
 		Sample sample = sampleRepository.getReferenceById(new SampleId(sampleId, evaluatedId, testTypeID));
-		if (sample == null) {
-			return null;
-		}
 		return SampleDTO.builder()
 				.id(sample.getId())
 				.evaluatedId(sample.getEvaluatedId())
