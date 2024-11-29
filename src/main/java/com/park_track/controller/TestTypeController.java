@@ -1,7 +1,6 @@
 package com.park_track.controller;
 
 import com.park_track.dto.TypeOfTestDTO;
-import com.park_track.service.EvaluatedService;
 import com.park_track.service.TypeOfTestService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import java.util.Optional;
 public class TestTypeController {
 
 	private final TypeOfTestService typeOfTestService;
-	private final EvaluatedService evaluatedService;
 
 	@GetMapping("/get-test-description")
 	public ResponseEntity<TypeOfTestDTO> getTestDescription(@RequestParam String testType) {
