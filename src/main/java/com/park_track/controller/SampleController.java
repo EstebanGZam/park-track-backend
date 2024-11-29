@@ -55,7 +55,7 @@ public class SampleController {
 		return ResponseEntity.ok(samples);
 	}
 
-	@GetMapping("/sample")
+	@GetMapping
 	public ResponseEntity<SampleDTO> getSampleById(@RequestParam("sampleID") long sampleId,
 												   @RequestParam("evaluatedId") long evaluatedId,
 												   @RequestParam("testTypeId") long testTypeID) {
