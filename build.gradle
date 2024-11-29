@@ -40,6 +40,10 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt:0.12.6'
     implementation 'org.mapstruct:mapstruct:1.5.0.Final'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.0.Final'
+    // WebClient for non-blocking HTTP requests
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
 tasks.named('test') {

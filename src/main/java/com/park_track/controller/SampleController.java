@@ -4,6 +4,7 @@ import com.park_track.dto.SampleDTO;
 import com.park_track.dto.SensorDataDTO;
 import com.park_track.dto.sample.SampleListDTO;
 import com.park_track.service.EvaluatedService;
+import com.park_track.service.FastAPIIntegrationService;
 import com.park_track.service.SampleService;
 import com.park_track.service.SensorDataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,27 +28,35 @@ public class SampleController {
 	private final SampleService sampleService;
 	private final SensorDataService sensorDataService;
 	private final EvaluatedService evaluatedService;
+	private final FastAPIIntegrationService fastAPIService;
 
 	@Autowired
-	public SampleController(SampleService sampleService, SensorDataService sensorDataService, EvaluatedService evaluatedService) {
+	public SampleController(SampleService sampleService, SensorDataService sensorDataService, EvaluatedService evaluatedService, FastAPIIntegrationService fastAPIService) {
 		this.sampleService = sampleService;
 		this.sensorDataService = sensorDataService;
 		this.evaluatedService = evaluatedService;
+		this.fastAPIService = fastAPIService;
 	}
 
 	@PostMapping("/receive-data")
-	public ResponseEntity<?> receiveSensorData(@RequestBody SensorDataDTO sensorData) {
-		try {
-			sensorDataService.saveSensorData(sensorData);
-			return ResponseEntity.ok("Data received and saved successfully!");
-		} catch (Exception e) {
-			logger.error("Error while saving sensor data: {}", e.getMessage(), e);
-			Map<String, Object> errorResponse = new HashMap<>();
-			errorResponse.put("message", "An error occurred while saving sensor data.");
-			errorResponse.put("error", e.getMessage());
-			errorResponse.put("timestamp", LocalDateTime.now());
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-		}
+	public Mono<ResponseEntity<? extends Map<String, ? extends Object>>> receiveSensorData(@RequestBody SensorDataDTO sensorData) {
+		return Mono.fromCallable(() -> {
+			try {
+				sensorDataService.saveSensorData(sensorData);
+				Mono<Map> fftResult = fastAPIService.processSensorData(sensorData.getData());
+				return ResponseEntity.ok(Map.of(
+						"message", "Data received and saved successfully!",
+						"fftAnalysis", fftResult.block()
+				));
+			} catch (Exception e) {
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						.body(Map.of(
+								"message", "Error processing sensor data",
+								"error", e.getMessage(),
+								"timestamp", LocalDateTime.now()
+						));
+			}
+		}).subscribeOn(Schedulers.boundedElastic());
 	}
 
 	@GetMapping("/{evaluatedId}")
