@@ -1,6 +1,7 @@
 package com.park_track.controller;
 
 import com.park_track.dto.SampleDTO;
+import com.park_track.dto.SampleDetailsResponseDTO;
 import com.park_track.dto.SensorDataDTO;
 import com.park_track.dto.sample.SampleListDTO;
 import com.park_track.dto.sample.SampleUpdateRequestDTO;
@@ -67,14 +68,26 @@ public class SampleController {
 	}
 
 	@GetMapping
-	public ResponseEntity<SampleDTO> getSampleById(@RequestParam("sampleID") long sampleId,
-												   @RequestParam("evaluatedId") long evaluatedId,
-												   @RequestParam("testTypeId") long testTypeID) {
-		logger.info("Fetching sample details with notes");
+	public ResponseEntity<SampleDetailsResponseDTO> getSampleById(
+			@RequestParam("sampleID") long sampleId,
+			@RequestParam("evaluatedId") long evaluatedId,
+			@RequestParam("testTypeId") long testTypeID) {
+		logger.info("endpoint sample hit");
+
 		SampleDTO sample = sensorDataService.getSampleByID(sampleId, evaluatedId, testTypeID);
-		return sample == null ?
-				new ResponseEntity<>(HttpStatus.NOT_FOUND) :
-				new ResponseEntity<>(sample, HttpStatus.OK);
+		if (sample == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+
+		// Llamar a FastAPI para obtener los datos analizados
+		Mono<Map> fftResult = fastAPIService.processSensorData(sample.getRawData());
+
+		// Crear el DTO de respuesta
+		SampleDetailsResponseDTO responseDTO = new SampleDetailsResponseDTO();
+		responseDTO.setSampleDetails(sample);
+		responseDTO.setFftAnalysis(fftResult.block());
+
+		return ResponseEntity.ok(responseDTO);
 	}
 
 	@DeleteMapping("/samples")
