@@ -25,9 +25,9 @@ VALUES
     (1,
      (SELECT id FROM evaluated WHERE id_number = '1234567890'),
      (SELECT id FROM types_of_test WHERE type = 'zapateo'),
-     'N',
+     'ON',
      TIMESTAMP '2024-03-15 10:00:00',
-     'A',
+     'Apto',
      '{
         "sensors": {
           "sensor1": {
@@ -59,9 +59,9 @@ VALUES
     (2,
      (SELECT id FROM evaluated WHERE id_number = '1111111111'),
      (SELECT id FROM types_of_test WHERE type = 'taconeo'),
-     'N',
+     'OFF',
      TIMESTAMP '2024-03-15 11:00:00',
-     'A',
+     'Apto',
      '{
         "sensors": {
           "sensor1": {

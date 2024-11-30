@@ -32,13 +32,13 @@ public class Sample {
 	@Column(name = "test_type_id", nullable = false)
 	private Long testTypeId;
 
-	@Column(nullable = false, length = 1)
+	@Column(nullable = false, length = 5)
 	private String onOffState;
 
 	@Column(name = "date", nullable = false)
 	private Timestamp date;
 
-	@Column(nullable = false, length = 1)
+	@Column(nullable = false, length = 10)
 	private String aptitudeForTheTest;
 
 	@Column(name = "raw_data", columnDefinition = "jsonb")

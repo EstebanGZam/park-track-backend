@@ -3,6 +3,7 @@ package com.park_track.controller;
 import com.park_track.dto.SampleDTO;
 import com.park_track.dto.SensorDataDTO;
 import com.park_track.dto.sample.SampleListDTO;
+import com.park_track.dto.sample.SampleUpdateRequestDTO;
 import com.park_track.service.EvaluatedService;
 import com.park_track.service.FastAPIIntegrationService;
 import com.park_track.service.SampleService;
@@ -69,7 +70,7 @@ public class SampleController {
 	public ResponseEntity<SampleDTO> getSampleById(@RequestParam("sampleID") long sampleId,
 												   @RequestParam("evaluatedId") long evaluatedId,
 												   @RequestParam("testTypeId") long testTypeID) {
-		logger.info("endpoint sample hit");
+		logger.info("Fetching sample details with notes");
 		SampleDTO sample = sensorDataService.getSampleByID(sampleId, evaluatedId, testTypeID);
 		return sample == null ?
 				new ResponseEntity<>(HttpStatus.NOT_FOUND) :
@@ -90,4 +91,19 @@ public class SampleController {
 		}
 	}
 
+	@PutMapping("/{evaluatedId}/{sampleId}/{testTypeId}")
+	public ResponseEntity<?> updateSample(
+			@PathVariable Long evaluatedId,
+			@PathVariable Long sampleId,
+			@PathVariable Long testTypeId,
+			@RequestBody SampleUpdateRequestDTO updateRequest) {
+		try {
+			sampleService.updateSample(evaluatedId, sampleId, testTypeId, updateRequest);
+			return ResponseEntity.ok(Map.of("message", "Sample updated successfully"));
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
+		}
+	}
 }

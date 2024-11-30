@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ObservationNote {
 	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
 	@ManyToOne

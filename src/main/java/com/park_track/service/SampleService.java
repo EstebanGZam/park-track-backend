@@ -1,7 +1,9 @@
 package com.park_track.service;
+import com.park_track.dto.sample.SampleUpdateRequestDTO;
 import com.park_track.entity.ObservationNote;
 import com.park_track.dto.sample.SampleListDTO;
 import com.park_track.entity.Sample;
+import com.park_track.entity.SampleId;
 import com.park_track.repository.ObservationNoteRepository;
 import com.park_track.repository.SampleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +40,7 @@ public class SampleService {
     public List<SampleListDTO> getSamplesByEvaluatedId(Long evaluatedId) {
         return sampleRepository.findByEvaluatedId(evaluatedId).stream()
                 .map(sample -> {
-                    List<String> comments = observationNoteRepository.findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(
+                    List<String> observationNotes = observationNoteRepository.findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(
                                     sample.getId(), sample.getEvaluatedId(), sample.getTestTypeId())
                             .stream()
                             .map(ObservationNote::getDescription)
@@ -52,7 +54,7 @@ public class SampleService {
                             .onOffState(sample.getOnOffState())
                             .rawData(sample.getRawData())
                             .aptitudeForTheTest(sample.getAptitudeForTheTest())
-                            .comments(comments)
+                            .observationNotes(observationNotes)
                             .build();
                 })
                 .collect(Collectors.toList());
@@ -61,4 +63,35 @@ public class SampleService {
     public Sample getLastSampleByEvaluatedId(Long evaluatedId) {
         return sampleRepository.findTopByEvaluatedIdOrderByDateDesc(evaluatedId);
     }
+
+    @Transactional
+    public void updateSample(Long evaluatedId, Long sampleId, Long testTypeId, SampleUpdateRequestDTO updateRequest) {
+        if (!updateRequest.isValid()) {
+            throw new IllegalArgumentException("If state is OFF, a comment is required.");
+        }
+
+        SampleId sampleIdKey = new SampleId(sampleId, evaluatedId, testTypeId);
+        Sample sample = sampleRepository.findById(sampleIdKey)
+                .orElseThrow(() -> new IllegalArgumentException("Sample not found"));
+
+        sample.setOnOffState(updateRequest.getOnOffState());
+        sample.setAptitudeForTheTest(updateRequest.getAptitudeForTheTest());
+        sampleRepository.save(sample);
+
+        List<ObservationNote> existingNotes = observationNoteRepository.findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(
+                sampleId, evaluatedId, testTypeId);
+
+        observationNoteRepository.deleteAll(existingNotes);
+
+        if (updateRequest.getNotes() != null && !updateRequest.getNotes().isEmpty()) {
+            List<ObservationNote> newNotes = updateRequest.getNotes().stream()
+                    .map(note -> ObservationNote.builder()
+                            .sample(sample)
+                            .description(note)
+                            .build())
+                    .collect(Collectors.toList());
+            observationNoteRepository.saveAll(newNotes);
+        }
+    }
+
 }

@@ -1,11 +1,13 @@
 package com.park_track.service;
 
+import com.park_track.dto.ObservationNoteDTO;
 import com.park_track.dto.SensorDataDTO;
 import com.park_track.dto.MetadataDTO;
 import com.park_track.dto.SampleDTO;
 import com.park_track.entity.Sample;
 import com.park_track.entity.SampleId;
 import com.park_track.model.RawData;
+import com.park_track.repository.ObservationNoteRepository;
 import com.park_track.repository.SampleRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,18 +17,21 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SensorDataService {
 
 	private final SampleRepository sampleRepository;
+	private final ObservationNoteRepository observationNoteRepository;
 	private final TypeOfTestService typeOfTestService;
 	private final EvaluatedService evaluatedService;
 
 	@Autowired
-	public SensorDataService(SampleRepository sampleRepository, 
-			TypeOfTestService typeOfTestService, EvaluatedService evaluatedService) {
+	public SensorDataService(SampleRepository sampleRepository, ObservationNoteRepository observationNoteRepository, TypeOfTestService typeOfTestService, EvaluatedService evaluatedService) {
 		this.sampleRepository = sampleRepository;
+		this.observationNoteRepository = observationNoteRepository;
 		this.typeOfTestService = typeOfTestService;
 		this.evaluatedService = evaluatedService;
 	}
@@ -82,6 +87,16 @@ public class SensorDataService {
 
 	public SampleDTO getSampleByID(long sampleId, long evaluatedId, long testTypeID) {
 		Sample sample = sampleRepository.getReferenceById(new SampleId(sampleId, evaluatedId, testTypeID));
+
+		List<ObservationNoteDTO> observationNotes = observationNoteRepository
+				.findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(sampleId, evaluatedId, testTypeID)
+				.stream()
+				.map(note -> ObservationNoteDTO.builder()
+						.id(note.getId())
+						.description(note.getDescription())
+						.build())
+				.collect(Collectors.toList());
+
 		return SampleDTO.builder()
 				.id(sample.getId())
 				.evaluatedId(sample.getEvaluatedId())
@@ -89,6 +104,7 @@ public class SensorDataService {
 				.onOffState(sample.getOnOffState())
 				.date(sample.getDate())
 				.aptitudeForTheTest(sample.getAptitudeForTheTest())
+				.observationNotes(observationNotes)
 				.rawData(sample.getRawData()) // You can also choose to map specific fields from rawData
 				.build();
 	}

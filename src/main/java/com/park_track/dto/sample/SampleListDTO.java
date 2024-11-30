@@ -21,6 +21,6 @@ public class SampleListDTO {
     private String onOffState;
     private RawData rawData;
     private String aptitudeForTheTest;
-    private List<String> comments;
+    private List<String> observationNotes;
 
 }

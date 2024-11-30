@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Data
 @Builder
@@ -20,6 +21,7 @@ public class SampleDTO {
     private String onOffState;
     private Timestamp date;
     private String aptitudeForTheTest;
+    private List<ObservationNoteDTO> observationNotes;
     private RawData rawData; // You can include RawData fields or simplify based on your needs
 
 }
