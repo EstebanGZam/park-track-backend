@@ -1,6 +1,8 @@
 package com.park_track.service;
+
 import com.park_track.dto.sample.SampleUpdateRequestDTO;
 import com.park_track.entity.ObservationNote;
+import com.park_track.dto.sample.CreateObservationDTO;
 import com.park_track.dto.sample.SampleListDTO;
 import com.park_track.entity.Sample;
 import com.park_track.entity.SampleId;
@@ -24,9 +26,11 @@ public class SampleService {
         this.sampleRepository = sampleRepository;
         this.observationNoteRepository = observationNoteRepository;
     }
+
     public Optional<Sample> getSampleByIds(Long evaluatedId, Long id, Long testTypeId) {
         return sampleRepository.findByEvaluatedIdAndIdAndTestTypeId(evaluatedId, id, testTypeId);
     }
+
     @Transactional
     public boolean deleteSampleIfExists(Long evaluatedId, Long id, Long testTypeId) {
         Optional<Sample> sample = getSampleByIds(evaluatedId, id, testTypeId);
@@ -40,7 +44,8 @@ public class SampleService {
     public List<SampleListDTO> getSamplesByEvaluatedId(Long evaluatedId) {
         return sampleRepository.findByEvaluatedId(evaluatedId).stream()
                 .map(sample -> {
-                    List<String> observationNotes = observationNoteRepository.findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(
+                    List<String> observationNotes = observationNoteRepository
+                            .findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(
                                     sample.getId(), sample.getEvaluatedId(), sample.getTestTypeId())
                             .stream()
                             .map(ObservationNote::getDescription)
@@ -78,8 +83,9 @@ public class SampleService {
         sample.setAptitudeForTheTest(updateRequest.getAptitudeForTheTest());
         sampleRepository.save(sample);
 
-        List<ObservationNote> existingNotes = observationNoteRepository.findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(
-                sampleId, evaluatedId, testTypeId);
+        List<ObservationNote> existingNotes = observationNoteRepository
+                .findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(
+                        sampleId, evaluatedId, testTypeId);
 
         observationNoteRepository.deleteAll(existingNotes);
 
@@ -92,6 +98,34 @@ public class SampleService {
                     .collect(Collectors.toList());
             observationNoteRepository.saveAll(newNotes);
         }
+
     }
 
+    @Transactional
+    public void createObservation(Long evaluatedId, Long sampleId, Long testTypeId, CreateObservationDTO observation) {
+
+        SampleId sampleIdKey = new SampleId(sampleId, evaluatedId, testTypeId);
+        Sample sample = sampleRepository.findById(sampleIdKey)
+                .orElseThrow(() -> new IllegalArgumentException("Sample not found"));
+
+        ObservationNote observationNote = ObservationNote.builder()
+                .sample(sample)
+                .description(observation.getDescription())
+                .build();
+
+        observationNoteRepository.save(observationNote);
+    }
+
+    public void createObservationToLastSample(Long evaluatedID, Long testTypeId, CreateObservationDTO observation) {
+        Sample sample = sampleRepository.findLatestSampleByEvaluatedIdAndTestTypeId(evaluatedID, testTypeId).get();
+        if (sample != null) {
+            ObservationNote observationNote = ObservationNote.builder()
+                    .sample(sample)
+                    .description(observation.getDescription())
+                    .build();
+            observationNoteRepository.save(observationNote);
+        } else {
+            throw new IllegalArgumentException();
+        }
+    }
 }

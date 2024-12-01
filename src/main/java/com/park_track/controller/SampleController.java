@@ -3,6 +3,7 @@ package com.park_track.controller;
 import com.park_track.dto.SampleDTO;
 import com.park_track.dto.SampleDetailsResponseDTO;
 import com.park_track.dto.SensorDataDTO;
+import com.park_track.dto.sample.CreateObservationDTO;
 import com.park_track.dto.sample.SampleListDTO;
 import com.park_track.dto.sample.SampleUpdateRequestDTO;
 import com.park_track.service.EvaluatedService;
@@ -113,6 +114,39 @@ public class SampleController {
 		try {
 			sampleService.updateSample(evaluatedId, sampleId, testTypeId, updateRequest);
 			return ResponseEntity.ok(Map.of("message", "Sample updated successfully"));
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
+		}
+	}
+
+	@PostMapping("/{evaluatedId}/{sampleId}/{testTypeId}/create-observation")
+	public ResponseEntity<?> createObservation(
+			@PathVariable Long evaluatedId,
+			@PathVariable Long sampleId,
+			@PathVariable Long testTypeId,
+			@RequestBody CreateObservationDTO observation
+	){
+		try {
+			sampleService.createObservation(evaluatedId, sampleId, testTypeId, observation);
+			return ResponseEntity.ok(Map.of("message", "Observation Note created succesfully"));
+		} catch (IllegalArgumentException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
+		}
+	}
+
+	@PostMapping("/{evaluatedId}/{testTypeId}/observationToLastSampple")
+	public ResponseEntity<?> createObservation(
+			@PathVariable Long evaluatedId,
+			@PathVariable Long testTypeId,
+			@RequestBody CreateObservationDTO observation
+	){
+		try {
+			sampleService.createObservationToLastSample(evaluatedId,testTypeId,observation);
+			return ResponseEntity.ok(Map.of("message", "Observation Note created succesfully"));
 		} catch (IllegalArgumentException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
 		} catch (Exception e) {

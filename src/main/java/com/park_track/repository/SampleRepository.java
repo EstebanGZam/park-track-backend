@@ -22,16 +22,20 @@ public interface SampleRepository extends JpaRepository<Sample, SampleId> {
 
 	@Modifying
 	@Transactional
-	@Query(value = "INSERT INTO samples (evaluated_id, id, test_type_id, on_off_state, date, aptitude_for_the_test, raw_data) " +
-			"VALUES (:evaluatedId, :id, :testTypeId, :onOffState, :date, :aptitudeForTheTest, CAST(:rawData AS jsonb))",
-			nativeQuery = true)
+	@Query(value = "INSERT INTO samples (evaluated_id, id, test_type_id, on_off_state, date, aptitude_for_the_test, raw_data) "
+			+
+			"VALUES (:evaluatedId, :id, :testTypeId, :onOffState, :date, :aptitudeForTheTest, CAST(:rawData AS jsonb))", nativeQuery = true)
 	void insertSampleWithJsonbCast(@Param("evaluatedId") Long evaluatedId,
-								   @Param("id") Long id,
-								   @Param("testTypeId") Long testTypeId,
-								   @Param("onOffState") String onOffState,
-								   @Param("date") Timestamp date,
-								   @Param("aptitudeForTheTest") String aptitudeForTheTest,
-								   @Param("rawData") String rawData);
+			@Param("id") Long id,
+			@Param("testTypeId") Long testTypeId,
+			@Param("onOffState") String onOffState,
+			@Param("date") Timestamp date,
+			@Param("aptitudeForTheTest") String aptitudeForTheTest,
+			@Param("rawData") String rawData);
 
 	Optional<Sample> findByEvaluatedIdAndIdAndTestTypeId(Long evaluatedId, Long id, Long testTypeId);
+
+	@Query("SELECT s FROM Sample s WHERE s.evaluatedId = :evaluatedId AND s.testTypeId = :testTypeId ORDER BY s.date DESC")
+	Optional<Sample> findLatestSampleByEvaluatedIdAndTestTypeId(@Param("evaluatedId") Long evaluatedId,
+			@Param("testTypeId") Long testTypeId);
 }
