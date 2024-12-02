@@ -18,8 +18,8 @@ public class SampleDTO {
     private Long id;
     private Long evaluatedId;
     private Long testTypeId;
-    private String onOffState;
     private Timestamp date;
+    private String onOffState;
     private String aptitudeForTheTest;
     private List<ObservationNoteDTO> observationNotes;
     private RawData rawData; // You can include RawData fields or simplify based on your needs
