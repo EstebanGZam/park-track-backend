@@ -96,12 +96,3 @@ VALUES
      (SELECT id FROM types_of_test WHERE type = 'zapateo'), -- sample_test_type_id
      'El paciente mostró fatiga después de 30 segundos de la prueba'
     );
-
-INSERT INTO observation_notes (id, sample_evaluated_id, sample_id, sample_test_type_id, description)
-VALUES
-    (2,
-     (SELECT id FROM evaluated WHERE id_number = '0987654321'), -- sample_evaluated_id
-     2, -- sample_id
-     (SELECT id FROM types_of_test WHERE type = 'taconeo'), -- sample_test_type_id
-     'La prueba se completó sin inconvenientes, buena coordinación'
-    );
