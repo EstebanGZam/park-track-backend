@@ -1,5 +1,6 @@
 package com.park_track.service;
 
+import com.park_track.dto.ObservationNoteDTO;
 import com.park_track.dto.sample.SampleUpdateRequestDTO;
 import com.park_track.entity.ObservationNote;
 import com.park_track.dto.sample.CreateObservationDTO;
@@ -87,18 +88,40 @@ public class SampleService {
                 .findBySampleIdAndSampleEvaluatedIdAndSampleTestTypeId(
                         sampleId, evaluatedId, testTypeId);
 
-        observationNoteRepository.deleteAll(existingNotes);
+        List<ObservationNote> notesToSave = updateRequest.getNotes().stream()
+                .map(noteDto -> {
+                    if (noteDto.getId() != null) {
+                        // Buscar y actualizar la nota existente
+                        ObservationNote existingNote = existingNotes.stream()
+                                .filter(existingNoteObj -> existingNoteObj.getId().equals(noteDto.getId()))
+                                .findFirst()
+                                .orElseThrow(() -> new IllegalArgumentException("Note with ID " + noteDto.getId() + " not found"));
 
-        if (updateRequest.getNotes() != null && !updateRequest.getNotes().isEmpty()) {
-            List<ObservationNote> newNotes = updateRequest.getNotes().stream()
-                    .map(note -> ObservationNote.builder()
-                            .sample(sample)
-                            .description(note)
-                            .build())
-                    .collect(Collectors.toList());
-            observationNoteRepository.saveAll(newNotes);
-        }
+                        existingNote.setDescription(noteDto.getDescription());
+                        // Hacer merge para actualizar sin crear una nueva instancia en la sesión
+                        return observationNoteRepository.save(existingNote);
+                    } else {
+                        // Crear una nueva nota
+                        return ObservationNote.builder()
+                                .sample(sample)
+                                .description(noteDto.getDescription())
+                                .build();
+                    }
+                })
+                .collect(Collectors.toList());
 
+        // Eliminar las notas que ya no están en la lista de actualización
+        List<Long> updatedNoteIds = updateRequest.getNotes().stream()
+                .filter(noteDto -> noteDto.getId() != null)
+                .map(ObservationNoteDTO::getId)
+                .collect(Collectors.toList());
+
+        List<ObservationNote> notesToDelete = existingNotes.stream()
+                .filter(existingNote -> !updatedNoteIds.contains(existingNote.getId()))
+                .collect(Collectors.toList());
+
+        observationNoteRepository.deleteAll(notesToDelete);
+        observationNoteRepository.saveAll(notesToSave);
     }
 
     @Transactional
