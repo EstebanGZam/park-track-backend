@@ -1,6 +1,5 @@
 # ParkTrack Backend 🏥🧠
 
-![ICESI University Logo](https://www.icesi.edu.co/launiversidad/images/La_universidad/logo_icesi.png)
 
 ## Authors ✒️
 
